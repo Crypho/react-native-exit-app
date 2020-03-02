@@ -34,6 +34,13 @@ public class RNExitAppModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void exitApp() {
+        // We send app to background first before killing it to avoid issue with Android Q 
+        // when we try to invoke the app form lock screen (the send event never be called!)
+        Intent i = new Intent();
+        i.setAction(Intent.ACTION_MAIN);
+        i.addCategory(Intent.CATEGORY_HOME);
+        this.reactContext.startActivity(i);
+
         android.os.Process.killProcess(android.os.Process.myPid());
     }
 }
